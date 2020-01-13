@@ -1,3 +1,4 @@
+import self as self
 from django.shortcuts import render
 
 from rest_framework import status, mixins
@@ -10,7 +11,6 @@ from rest_framework.response import Response
 from .models import Employees, Relationship
 from .serializers import EmployeeSerializer, RelationshipSerializer
 
-
 # Create your views here.
 
 
@@ -19,6 +19,7 @@ class EmployeeCreateView(CreateAPIView):
     model = Employees
     queryset = Employees.objects.all()
     serializer_class = EmployeeSerializer
+    fields = ['national_identifier']
 
 
     def create(self, request, *args, **kwargs):
@@ -62,10 +63,6 @@ class EmployeeDestroyView(DestroyAPIView):
     serializer_class = EmployeeSerializer
 
 
-
-
-
-
 class RelationshipCreateView(ListModelMixin, CreateModelMixin, GenericAPIView):
     model = Relationship
     queryset = Relationship.objects.all()
@@ -85,7 +82,11 @@ class RelationshipCreateView(ListModelMixin, CreateModelMixin, GenericAPIView):
         return self.create(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
+
         return self.list(request, *args, **kwargs)
+
+    # def get_queryset(self):
+    #     breakpoint()
 
 
 
