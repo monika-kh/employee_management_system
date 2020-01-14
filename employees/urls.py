@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import EmployeeCreateView, AllEmployeeListView, OneEmployeeRetrieveView, EmployeeUpdateView, \
-    EmployeeDestroyView, RelationshipCreateView
+    EmployeeDestroyView, RelationshipCreateView, RelationshipRetrieveUpdateDestroyView
 
 urlpatterns = [
     path('emp_create/', EmployeeCreateView.as_view()),
@@ -9,7 +9,7 @@ urlpatterns = [
     path('emp_update/<int:pk>/', EmployeeUpdateView.as_view()),
     path('emp_delete/<int:pk>/', EmployeeDestroyView.as_view()),
 
-    path('re_create/', RelationshipCreateView.as_view()),
-    #path('re_delete/<int:pk>/', EmployeeDestroyView.as_view()),
+    path('re_create_list/', RelationshipCreateView.as_view()),
+    path('re_retrieve_update_delete/<int:pk>/', RelationshipRetrieveUpdateDestroyView.as_view()),
 
 ]
