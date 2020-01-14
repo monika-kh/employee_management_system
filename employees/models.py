@@ -55,7 +55,7 @@ class Relationship(models.Model):
         ('child', 'Child'),
         ('husband', 'Husband'),
     ]
-    employee_id = models.ForeignKey(Employees, on_delete=models.CASCADE)
+    employee_id = models.ForeignKey(Employees, on_delete=models.CASCADE, related_name="employee")
     relationship_type = models.CharField(choices=RELATIONSHIP_TYPE_CHOICES, max_length=25)
     name = models.CharField(max_length=255)
     age = models.PositiveIntegerField()
