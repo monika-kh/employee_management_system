@@ -1,11 +1,11 @@
-import self as self
 from django.shortcuts import render
 
 from rest_framework import status, mixins
 from rest_framework.generics import (CreateAPIView, RetrieveAPIView, ListAPIView, UpdateAPIView, DestroyAPIView,
-    GenericAPIView)
+                                     GenericAPIView, RetrieveUpdateDestroyAPIView)
 
-from rest_framework.mixins import CreateModelMixin, ListModelMixin
+from rest_framework.mixins import CreateModelMixin, ListModelMixin, DestroyModelMixin, UpdateModelMixin, \
+    RetrieveModelMixin
 from rest_framework.response import Response
 
 from .models import Employees, Relationship
@@ -55,6 +55,30 @@ class EmployeeUpdateView(UpdateAPIView):
     #update method can be used for put and patch method
     queryset = Employees.objects.all()
     serializer_class = EmployeeSerializer
+    exclude = ("national_identifier", "date_of_birth", "place_of_birth")
+
+    def put(self, request, *args, **kwargs):
+        serializer = EmployeeSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            pk = request.data.get("id")
+            salary = request.data.get("salary")
+            deduction = request.data.get("deduction")
+            earning = request.data.get("earning")
+            marital_status = request.data.get("marital_status")
+            position = request.data.get("position")
+
+            update_emp = Employees.objects.get(id=pk)
+
+            update_emp.salary = salary
+            update_emp.deduction = deduction
+            update_emp.earning = earning
+            update_emp.marital_status = marital_status
+            update_emp.position = position
+
+            update_emp.save()
+
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
 
 
 class EmployeeDestroyView(DestroyAPIView):
@@ -68,6 +92,7 @@ class RelationshipCreateView(ListModelMixin, CreateModelMixin, GenericAPIView):
     queryset = Relationship.objects.all()
 
     serializer_class = RelationshipSerializer
+
     def post(self, request, *args, **kwargs):
         serializer = RelationshipSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
@@ -82,11 +107,37 @@ class RelationshipCreateView(ListModelMixin, CreateModelMixin, GenericAPIView):
         return self.create(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-
         return self.list(request, *args, **kwargs)
 
-    # def get_queryset(self):
-    #     breakpoint()
+
+class RelationshipRetrieveUpdateDestroyView(RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, GenericAPIView):
+    model = Relationship
+    queryset = Relationship.objects.all()
+    serializer_class = RelationshipSerializer
+
+    def get(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+        # return self.retrieve(request, *args, **kwargs)
+
+
+    def put(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        #self.perform_update(serializer)
+        return Response(serializer.data)
+
+    # def perform_update(self, serializer):
+    #     serializer.save()
+
+
+    def delete(self, request, *args, **kwargs):
+        pk = request.data.get("id")
+        relation = Relationship.objects.filter(id=pk)
+        relation.delete()
+        return Response({"message": "Deleted"}, status=200)
 
 
 
