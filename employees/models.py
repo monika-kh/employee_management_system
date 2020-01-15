@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # from __future__ import unicode_literals
-
+# from django.db.models.signals import post_save
+# from django.dispatch import receiver
 from django.db import models
 
 
@@ -65,3 +66,27 @@ class Relationship(models.Model):
 
     def __str__(self):
         return self.relationship_type
+
+
+# def save_employee_salary(sender, instance, created, **kwargs):
+#     if created:
+#         qs = Employees.objects.filter(id=instance.id, national_identifier=instance.national_identifier)
+#         if qs.exists() and qs.count() == 1:
+#             employee = qs.first()
+#             breakpoint()
+#             position = employee.position
+#             if position == 'Employee':
+#                 deduction = (employee.salary * 7.5) / 100
+#                 employee.deduction = deduction
+#                 employee.save()
+#             if position == 'Manager':
+#                 deduction = (employee.salary * 12) / 100
+#                 employee.deduction = deduction
+#                 employee.save()
+#             if position == 'CEO':
+#                 deduction = (employee.salary * 15) / 100
+#                 employee.deduction = deduction
+#                 employee.save()
+#
+#
+# post_save.connect(save_employee_salary, sender=Employees)

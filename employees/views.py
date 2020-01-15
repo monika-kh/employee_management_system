@@ -11,6 +11,8 @@ from rest_framework.response import Response
 from .models import Employees, Relationship
 from .serializers import EmployeeSerializer, RelationshipSerializer
 
+#from .signals import save_employee_salary
+
 # Create your views here.
 
 
@@ -32,7 +34,16 @@ class EmployeeCreateView(CreateAPIView):
             else:
                 serializer.save()
                 data = serializer.data
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+                # emp_salary = request.data.get("salary")
+                # emp_deduction = request.data.get("deduction")
+                # emp_earning = request.data.get("earning")
+                # # breakpoint()
+                # save_employee_salary.send(sender=Employees, emp_salary=emp_salary, emp_deduction=emp_deduction, emp_earning=emp_earning)
+
+
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=400)
 
 
